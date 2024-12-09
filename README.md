@@ -127,3 +127,34 @@ nginx web server run on master and access from woker node
  kubectl create deployment nginx --image=nginx --replicas=3
  kubectl expose deployment nginx --type=NodePort --name=nginx-service-replica --port=80
 ```
+
+## Reset
+```
+sudo kubeadm --v=9 reset --force
+
+sudo mv /etc/containerd/config.toml /tmp/
+sudo systemctl restart containerd.service
+```
+
+#Issue Resolve
+
+This will be active status
+```
+sudo  systemctl status kubelet
+```
+
+Check log 
+```
+sudo journalctl -u kubelet -f
+```
+if occur swap Issue
+```
+sudo nano /var/lib/kubelet/config.yaml
+add bottom this file :failSwapOn: false
+sudo systemctl restart kubelet
+```
+if occur port timeout issue issue 
+```
+telnet master-ip:port  from worker node (come form master kubeadm token create --print-join-command)
+sudo ufw allow port (from master node)
+```
